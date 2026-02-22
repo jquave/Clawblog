@@ -129,9 +129,9 @@ Apple Silicon's unified memory architecture is the secret weapon for local LLMs.
 
 ```
 M3 Pro:    150 GB/s
-M3 Max:    400 GB/s  <-- MacBook Pro ceiling
-M3 Ultra:  800 GB/s  <-- Mac Studio
+M3 Max:    400 GB/s   <-- MacBook Pro ceiling
 M4 Max:    546 GB/s
+M3 Ultra:  800 GB/s   <-- Mac Studio (up to 512GB unified memory)
 ```
 
 **Critical: Use MLX, not llama.cpp.** MLX is ~50% faster on Apple Silicon. For Qwen3-Coder-Next, that's 60 tok/s (MLX) vs 24 tok/s (llama.cpp).
@@ -153,7 +153,7 @@ M4 Max:    546 GB/s
 
 **128GB gives you a massive advantage.** Most people max out at 8B-14B models. You can run gpt-oss-120b (near o4-mini quality) and MiniMax-M2.5 (frontier-tier) -- models that normally need datacenter GPUs.
 
-#### M3 Ultra (Mac Studio, 192GB, 800 GB/s)
+#### M3 Ultra (Mac Studio, 192GB Unified Memory, 800 GB/s)
 
 | Model | Size (Quantized) | tok/s (MLX) | Notes |
 |---|:---:|:---:|---|
@@ -161,7 +161,21 @@ M4 Max:    546 GB/s
 | gpt-oss-120b | ~60-80GB | ~40-60 | Excellent on this chip |
 | Llama 3.3 70B | ~46GB (Q4) | ~12-18 | Usable |
 | Qwen 2.5 72B | ~50GB (Q4) | ~12-15 | Similar to 70B |
-| DeepSeek R1 | large | ~17-18 | Frontier reasoning |
+
+#### M3 Ultra (Mac Studio, 512GB Unified Memory, 800 GB/s)
+
+This is the local inference beast. 512GB of unified memory at 819 GB/s means you can run models that otherwise require datacenter hardware -- including the full DeepSeek R1 at 671B parameters entirely in memory. Nothing else in a desktop form factor comes close.
+
+| Model | Size (Quantized) | tok/s (MLX) | Notes |
+|---|:---:|:---:|---|
+| GLM-4.7-Flash | ~16GB | ~120-160 | Barely touches your RAM |
+| gpt-oss-120b | ~60-80GB | ~40-60 | Runs comfortably with room to spare |
+| Qwen 2.5 235B | ~130GB (Q4) | ~30 | Full-size frontier model, no quantization compromises |
+| **DeepSeek R1 (671B)** | ~350GB (Q4) | **~17-18** | The whole thing. In a desktop. |
+| **GLM-5 (754B)** | ~241GB (Q2) | **~5-10** | #1 open source model, locally |
+| Llama 3.3 70B | ~46GB (Q4) | ~12-18 | Trivial for this machine |
+
+At ~$8,000-9,000, this is not cheap. But compared to renting H100 clusters, it pays for itself fast if you're running inference regularly. You can run the literal #1 open source model (GLM-5) on your desk -- something that would otherwise require ~$30K+ in GPU hardware.
 
 #### M4 Max (2025 MacBook Pro, 128GB, 546 GB/s)
 
@@ -226,31 +240,18 @@ The sweet spot: **GLM-4.7-Flash** delivers top-5 open source quality at 60-220 t
 
 ## How to Get Started
 
-### Option 1: Ollama (Easiest)
+### Option 1: LM Studio (Recommended)
 
-```bash
-# Install
-curl -fsSL https://ollama.com/install.sh | sh
+Download from [lmstudio.ai](https://lmstudio.ai). The best all-in-one experience for running local models. Browse and download models directly from the app, supports MLX backend for Apple Silicon (50% faster than llama.cpp), and provides a clean chat UI plus an OpenAI-compatible local API server. Works on macOS, Windows, and Linux.
 
-# Run the best models
-ollama run glm-4.7-flash        # Best all-around
-ollama run nanbeige4.1:3b       # Fastest small model
-ollama run gpt-oss:20b          # OpenAI's open model
-ollama run qwen3-coder-next     # Best for coding
-```
-
-### Option 2: LM Studio (Best GUI + MLX on Mac)
-
-Download from [lmstudio.ai](https://lmstudio.ai). Supports MLX backend for Apple Silicon (50% faster than llama.cpp). Browse and download models directly.
-
-### Option 3: MLX (Fastest on Apple Silicon)
+### Option 2: MLX (Fastest on Apple Silicon)
 
 ```bash
 pip install mlx-lm
 mlx_lm.generate --model mlx-community/GLM-4.7-Flash-4bit --prompt "Hello"
 ```
 
-### Option 4: llama.cpp (Most Flexible)
+### Option 3: llama.cpp (Most Flexible)
 
 ```bash
 brew install llama.cpp  # or build from source
@@ -266,7 +267,7 @@ llama-cli -m model.gguf -p "Your prompt"
 
 3. **Nanbeige4.1-3B is the small model miracle** -- 3B params, outperforms 32B models, runs on anything.
 
-4. **128GB Macs are secretly OP** -- unified memory lets you run 120B+ MoE models that normally need datacenter hardware. Use MLX, not llama.cpp.
+4. **High-memory Macs are secretly OP** -- 128GB unified memory runs 120B+ MoE models that normally need datacenter GPUs. The 512GB Mac Studio runs the full DeepSeek R1 (671B) and GLM-5 (754B) on your desk. Use MLX, not llama.cpp.
 
 5. **MoE architecture is winning** -- models like gpt-oss-120b (5.1B active of 120B total) and Qwen3-Coder-Next (3B active of 80B total) get big-model quality at small-model speeds.
 
