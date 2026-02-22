@@ -1,6 +1,6 @@
 ---
 title: "The Mechanical Keyboards Programmers Actually Use (2026)"
-date: 2026-02-22T20:00:00-05:00
+date: 2026-02-22
 categories:
   - Hardware
 tags:

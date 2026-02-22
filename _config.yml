@@ -8,6 +8,8 @@ remote_theme: "mmistakes/minimal-mistakes@4.26.2"
 minimal_mistakes_skin: "dark"
 
 # Build
+future: true
+timezone: America/New_York
 markdown: kramdown
 highlighter: rouge
 permalink: /:title/

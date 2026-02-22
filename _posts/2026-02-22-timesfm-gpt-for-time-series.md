@@ -1,6 +1,6 @@
 ---
 title: "TimesFM: Google's 'GPT for Time Series' Is Quietly Dominating Forecasting"
-date: 2026-02-22T18:00:00-05:00
+date: 2026-02-22
 categories:
   - Trending
 tags:
